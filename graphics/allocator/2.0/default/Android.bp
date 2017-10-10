@@ -4,6 +4,14 @@ cc_library_shared {
     proprietary: true,
     relative_install_path: "hw",
     srcs: ["Gralloc.cpp", "Gralloc0Allocator.cpp", "Gralloc1Allocator.cpp"],
+    include_dirs: ["system/core/libgrallocusage/include"],
+    product_variables: {
+        lineage: {
+	    exynos4_enhancements: {
+	        cppflags: ["-DEXYNOS4_ENHANCEMENTS"],
+	    },
+        },
+    },
     cppflags: ["-Wall", "-Wextra"],
     shared_libs: [
         "android.hardware.graphics.allocator@2.0",
@@ -18,6 +26,7 @@ cc_library_shared {
     header_libs: [
         "libgrallocmapperincludes",
     ],
+    whole_static_libs: ["libgrallocusage"],
 }
 
 cc_binary {
@@ -42,6 +51,13 @@ cc_library_static {
     defaults: ["hidl_defaults"],
     srcs: ["gralloc1-adapter.cpp", "Gralloc1On0Adapter.cpp"],
     include_dirs: ["system/core/libsync/include"],
+    product_variables: {
+        lineage: {
+	    exynos4_enhancements: {
+	        cppflags: ["-DEXYNOS4_ENHANCEMENTS"],
+	    },
+        },
+    },
     cflags: ["-Wall", "-Wextra"],
     export_include_dirs: ["."],
     whole_static_libs: ["libgrallocusage"],
