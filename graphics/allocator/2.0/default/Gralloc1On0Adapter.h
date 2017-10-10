@@ -192,7 +192,6 @@ private:
     }
 
     // Buffer handle query functions
-
     class Buffer {
     public:
         Buffer(buffer_handle_t handle, gralloc1_backing_store_t store,
@@ -239,7 +238,11 @@ private:
         }
 
         gralloc1_error_t getNumFlexPlanes(uint32_t* outNumPlanes) const {
+#ifdef EXYNOS4_ENHANCEMENTS
+            *outNumPlanes = 4;
+#else
             *outNumPlanes = mNumFlexPlanes;
+#endif
             return GRALLOC1_ERROR_NONE;
         }
 
@@ -262,7 +265,9 @@ private:
         const gralloc1_backing_store_t mStore;
         const Descriptor mDescriptor;
         const uint32_t mStride;
+#ifndef EXYNOS4_ENHANCEMENTS
         const uint32_t mNumFlexPlanes;
+#endif
 
         // Whether this buffer allocated in this process (as opposed to just
         // being retained here), which determines whether to free or unregister

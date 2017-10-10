@@ -123,6 +123,27 @@ Return<void> GrallocMapper::createDescriptor(
     return Void();
 }
 
+native_handle_t* native_handle_clone(const native_handle_t* handle, int extraInts)
+{
+    native_handle_t* clone = native_handle_create(handle->numFds, handle->numInts + extraInts);
+    int i;
+
+    for (i = 0; i < handle->numFds; i++) {
+        clone->data[i] = dup(handle->data[i]);
+        if (clone->data[i] < 0) {
+            clone->numFds = i;
+            native_handle_close(clone);
+            native_handle_delete(clone);
+            return NULL;
+        }
+    }
+
+    memcpy(&clone->data[handle->numFds], &handle->data[handle->numFds],
+            sizeof(int) * (handle->numInts + extraInts));
+
+    return clone;
+}
+
 Return<void> GrallocMapper::importBuffer(const hidl_handle& rawHandle,
                                          importBuffer_cb hidl_cb) {
     // because of passthrough HALs, we must not generate an error when
