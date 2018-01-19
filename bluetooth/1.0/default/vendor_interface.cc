@@ -324,6 +324,10 @@ size_t VendorInterface::Send(uint8_t type, const uint8_t* data, size_t length) {
     ALOGV("%s: Sent wake before (%02x)", __func__, data[0] | (data[1] << 8));
   }
 
+  if (hci_ == nullptr) {
+      return 0;
+  }
+
   return hci_->Send(type, data, length);
 }
 
