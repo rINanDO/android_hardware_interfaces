@@ -19,7 +19,16 @@ cc_library_shared {
     vendor: true,
     relative_install_path: "hw",
     srcs: ["GrallocMapper.cpp", "Gralloc0Mapper.cpp", "Gralloc1Mapper.cpp"],
+    product_variables: {
+        lineage: {
+           exynos4_enhancements: {
+               cppflags: ["-DEXYNOS4_ENHANCEMENTS"],
+           },
+        },
+    },
+
     cppflags: ["-Wall", "-Wextra"],
+
     shared_libs: [
         "android.hardware.graphics.mapper@2.0",
         "libbase",

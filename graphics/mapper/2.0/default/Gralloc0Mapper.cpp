@@ -65,16 +65,21 @@ Error Gralloc0Mapper::lockBuffer(buffer_handle_t bufferHandle,
                                     &data, fenceFd);
     } else {
         waitFenceFd(fenceFd, "Gralloc0Mapper::lock");
-
         result = mModule->lock(mModule, bufferHandle, cpuUsage,
                                accessRegion.left, accessRegion.top,
-                               accessRegion.width, accessRegion.height, &data);
+                               accessRegion.width, accessRegion.height, outData);
     }
 
     if (result) {
         return Error::BAD_VALUE;
     } else {
         *outData = data;
+#ifdef EXYNOS4_ENHANCEMENTS
+        void **exynosData = outData;
+        ALOGE("%s: Data : %p, %p, %p", __func__, exynosData[0], exynosData[1], exynosData[2]);
+        outData[1] = exynosData[1];
+        outData[2] = exynosData[2];
+#endif
         return Error::NONE;
     }
 }
